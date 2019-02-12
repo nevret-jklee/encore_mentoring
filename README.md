@@ -1,2 +1,2 @@
 # encore_mentoring
-encore 8th mentoring
+encore mentoring 8th
