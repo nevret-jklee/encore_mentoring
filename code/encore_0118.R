@@ -214,14 +214,12 @@ str(df.test.prep)
 ## 모델 테스트 결과는 정확도 80%, 실제 구매자를 구매자로 예측할 확률 75%로 확인된다.
 
 # 테스트셋 성능 평가
-pred <- predict(fit.ud, df.test.prep, type = "prob", na.action = na.pass)
+pred <- predict(fit.ud, df.test.prep, type = "prob")
 
 pred <- pred %>%
   mutate(yes_cm = ifelse(yes > 0.5, 'yes', 'no'))
-str(pred$yes_cm)
-str(df.test.prep$y)
+
 pred$yes_cm <- as.factor(pred$yes_cm)
-str(pred$yes_cm)
 
 confusionMatrix(pred$yes_cm, df.test.prep$y)
 
@@ -238,68 +236,13 @@ df.test <- df.test %>%
 
 # 통합 데이터 생성
 df.prep <- rbind(df.train.prep, df.test.prep)
-df.prep <- df.prep %>% 
-  filter(complete.cases(df.prep))
-prep <- predict(fit.ud, df.prep, type = "prob")
-df <- rbind(df.train, df.test)
-View(df)
-df <- df %>% 
-  filter(complete.cases(df))
-str(df)
-str(pred$yes)
-df <- df %>% 
-  mutate(score = pred$yes_cm) %>% 
+
+pred <- predict(fit.ud, df.prep, type = "prob")
+df <- rbind(df.train, df.test) %>% 
+  na.omit(df) %>% 
+  mutate(score = pred$yes) %>% 
   mutate(predicted = ifelse(score>0.5, 'yes', 'no'))
 
 # 스코어링 결과 확인
 df %>% View()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
